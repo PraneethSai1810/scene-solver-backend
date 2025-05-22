@@ -76,9 +76,11 @@ logger.info(f"Using device: {device}")
 
 # Load YOLOv8 model
 try:
-    yolo_model_path = "yolo_fine_tuned.pt"  # File in repo root
+    yolo_model_path = "yolo_fine_tuned.pt"
+    logger.debug(f"Attempting to load YOLOv8 model from {yolo_model_path}")
     yolo_model = YOLO(yolo_model_path)
     logger.info("YOLOv8 model loaded successfully")
+    logger.debug(f"YOLOv8 model details: {yolo_model}")
 except Exception as e:
     logger.error(f"Failed to load YOLOv8 model: {str(e)}")
     raise Exception(f"Failed to load YOLOv8 model: {str(e)}")
@@ -192,17 +194,15 @@ def generate_summary(prompt):
     outputs = gpt2_model.generate(
         inputs,
         max_length=100,
-        num_return_sequences=1,
-        do_sample=False,  # Disable sampling for deterministic output
-        top_k=0,  # Disable top-k sampling
-        top_p=1.0,  # Disable top-p sampling
-        temperature=0.1,  # Very low temperature for deterministic output
-        num_beams=1,  # No beam search, keep it simple
+        do_sample=False,
+        top_k=0,
+        top_p=1.0,
+        temperature=0.1,
+        num_beams=1,
         no_repeat_ngram_size=2,
         early_stopping=True
     )
     description = gpt2_tokenizer.decode(outputs[0], skip_special_tokens=True)
-    # Clean up the description by removing the prompt if it's included in the output
     if description.startswith(prompt):
         description = description[len(prompt):].strip()
     return description
