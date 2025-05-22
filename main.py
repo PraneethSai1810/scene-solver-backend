@@ -71,7 +71,7 @@ except Exception as e:
     raise Exception(f"MongoDB connection failed: {str(e)}")
 
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cpu")
 logger.info(f"Using device: {device}")
 
 # Load YOLOv8 model
